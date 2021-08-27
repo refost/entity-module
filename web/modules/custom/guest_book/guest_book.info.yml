@@ -1,0 +1,4 @@
+name: Gust Book
+type: module
+description: This module provide entity guest book
+core_version_requirement: ^9
