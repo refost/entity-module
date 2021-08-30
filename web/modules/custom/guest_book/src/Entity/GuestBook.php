@@ -15,6 +15,7 @@ use Drupal\Core\Entity\EntityTypeInterface;
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
  *     "form" = {
  *       "default" = "Drupal\guest_book\Form\CommentForm",
+ *       "delete" = "Drupal\guest_book\Form\DeleteForm",
  *     },
  *   },
  *   base_table = "comments",
@@ -24,6 +25,8 @@ use Drupal\Core\Entity\EntityTypeInterface;
  *   },
  *   links = {
  *     "canonical" = "/guest_book_comment/{guest_book_comment}",
+ *     "edit-form" = "/guest_book_comment/{guest_book_comment}/edit",
+ *     "delete-form" = "/guest_book_comment/{guest_book_comment}/delete",
  *   },
  * )
  *
@@ -38,7 +41,6 @@ class GuestBook extends ContentEntityBase {
       ->setLabel(t('ID'))
       ->setDescription(t('The ID of the comment entity.'))
       ->setReadOnly(TRUE);
-
     // Standard field, unique outside of the scope of the current project.
     $fields['uuid'] = BaseFieldDefinition::create('uuid')
       ->setLabel(t('UUID'))
@@ -127,15 +129,12 @@ class GuestBook extends ContentEntityBase {
     $fields['comment'] = BaseFieldDefinition::create('string_long')
       ->setLabel(t('Comment'))
       ->setDescription(t('Write you comment.'))
-      ->setSettings([
-        'max_length' => 1000,
-      ])
       ->setRequired(TRUE)
       // Set no default value.
-      ->setDefaultValue(NULL)
+//      ->setDefaultValue(NULL)
       ->setDisplayOptions('view', [
         'label' => 'above',
-        'type' => 'string_long',
+        'type' => 'text_default',
         'weight' => 40,
       ])
       ->setDisplayOptions('form', [
@@ -201,8 +200,16 @@ class GuestBook extends ContentEntityBase {
       ->setDescription(t('The language code of ContentEntityExample entity.'));
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(t('Created'))
-      ->setDescription(t('The time that the entity was created.'));
-
+      ->setDescription(t('The time that the entity was created.'))
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'datetime_custom',
+        'settings' => [
+          'data_format' => 'Y-m-d H:i:s',
+        ],
+        'weight' => 70,
+      ])
+      ->setDisplayConfigurable('view', TRUE);
     return $fields;
   }
 

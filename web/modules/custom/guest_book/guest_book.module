@@ -1,0 +1,66 @@
+<?php
+
+use Drupal\Core\Render\Element;
+use Drupal\Core\Url;
+
+/**
+ * Implements hook_theme().
+ */
+function guest_book_theme($existing, $type, $theme, $path):array {
+  return [
+      'guest_book_template' => [
+        'variables' => [
+          'form' => [],
+          'comment' => [],
+          'pager' => [],
+        ],
+      ],
+    'guest_book_comment' => [
+      'template' => 'view-template',
+      'render element' => 'elements',
+    ],
+  ];
+}
+
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function guest_book_preprocess_guest_book_comment(&$variables) {
+  $variables['content'] = [];
+  foreach (Element::children($variables['elements']) as $key) {
+    $variables['content'][$key] = $variables['elements'][$key];
+  }
+
+  /** @var \Drupal\guest_book\Entity\GuestBook $entity */
+  $entity = $variables['elements']['#guest_book_comment'];
+
+  // Provide the label.
+  $variables['label'] = $entity->label();
+  // Provide the alias.
+  $variables['url'] = $entity->toUrl()->toString();
+
+  $variables['button'] = [
+    '#type' => 'link',
+    '#title' => 'Manage',
+    '#url' => Url::fromRoute('entity.guest_book_comment.edit_form', ['guest_book_comment' => $entity->id()],),
+  ];
+
+  if (count($variables['content']['avatar']) <= 3) {
+    $variables['content']['avatar'] = [
+      '#theme' => 'image',
+      '#uri' => '/modules/custom/guest_book/files/User_Icon.png',
+      '#attributes' => [
+        'alt' => 'picture',
+        'width' => 250,
+        'height' => 250,
+      ],
+    ];
+  }
+  $variables['#attached']['library'][] = 'guest_book/guest_book.comments';
+
+}
+
+function guest_book_preprocess_guest_book_template(&$variables) {
+  $variables['#attached']['library'][] = 'guest_book/guest_book.general';
+}

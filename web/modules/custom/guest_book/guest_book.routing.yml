@@ -1,23 +1,43 @@
-entity.guest_book_cooment.canonical:
+guest_book.comments:
+  path: '/guest_book_comment/comments'
+  defaults:
+    _title: 'Guest book'
+    # Calls the list controller, defined in the annotation of the contact entity.
+    _controller: 'Drupal\guest_book\Controller\CommentsController::build'
+  requirements:
+    # Checks for permission directly.
+    _permission: 'access content'
+
+entity.guest_book_comment.canonical:
   path: '/guest_book_comment/{guest_book_comment}'
   defaults:
     # Calls the view controller, defined in the annotation of the contact
     # entity. This marks this route as belonging to this entity type.
-    _entity_form: 'guest_book_comment'
+    _entity_view: 'guest_book_comment.view'
     _title: 'Contact content'
   requirements:
     # Calls the access controller of the entity, passing in the suffix ('view')
     # as the $operation parameter to checkAccess().
     _access: 'TRUE'
 
-guest_book.comments:
-  path: '/guest_book_comment/comments'
+entity.guest_book_comment.edit_form:
+  path: '/guest_book_comment/{guest_book_comment}/edit'
   defaults:
-    # Calls the list controller, defined in the annotation of the contact entity.
-    _controller: 'Drupal\guest_book\Controller\CommentsController::build'
-    _title: 'Contact list'
+    # Calls the form.edit controller, defined in the contact entity.
+    _entity_form: guest_book_comment.default
+    _title: 'Edit contact'
   requirements:
-    # Checks for permission directly.
-    _permission: 'access content'
+    # Calls the access controller of the entity, passing in the suffix
+    # ('update') as the $operation parameter to checkAccess().
+    _access: 'TRUE'
 
-
+entity.guest_book_comment.delete_form:
+  path: '/guest_book_comment/{guest_book_comment}/delete'
+  defaults:
+    # Calls the form.delete controller, defined in the contact entity.
+    _entity_form: guest_book_comment.delete
+    _title: 'Delete contact'
+  requirements:
+    # Calls the access controller of the entity, passing in the suffix
+    # ('delete') as the $operation parameter to checkAccess().
+    _access: 'TRUE'

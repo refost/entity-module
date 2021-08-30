@@ -1,0 +1,9 @@
+guest_book.general:
+  css:
+    theme:
+      css/styles.css: {}
+
+guest_book.comments:
+  css:
+    theme:
+      css/comment.css: {}
