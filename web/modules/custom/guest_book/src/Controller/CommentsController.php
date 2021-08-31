@@ -5,27 +5,40 @@ namespace Drupal\guest_book\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * Class that control displaying form.
+ */
 class CommentsController extends ControllerBase {
 
   /**
-   * Entity storage for node entities.
+   * Drupal services.
    *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
+   * @var \Drupal\Core\Entity\EntityTypeManager
    */
-  protected $nodeStorage;
-
   protected $entityManager;
+
+  /**
+   * Drupal services.
+   *
+   * @var \Drupal\Core\Entity\EntityFormBuilder
+   */
   protected $formBuild;
 
-  public static function create(ContainerInterface $container)
-  {
+  /**
+   * Method provide dependency injection and add services.
+   */
+  public static function create(ContainerInterface $container) {
     $instance = parent::create($container);
     $instance->entityManager = $container->get('entity_type.manager');
     $instance->formBuild = $container->get('entity.form_builder');
     return $instance;
   }
 
+  /**
+   * Method that create output of module.
+   */
   public function build() {
+
     $entity = $this->entityManager
       ->getStorage('guest_book_comment')
       ->create([
@@ -37,13 +50,14 @@ class CommentsController extends ControllerBase {
     $storage = $this->entityManager->getStorage('guest_book_comment');
     $entity = $storage->getQuery()
       ->sort('created', 'DESC')
-      ->pager(2);
+      ->pager(5);
 
     $coments_ids = $entity->execute();
     $view_builder = $this->entityManager->getViewBuilder('guest_book_comment');
 
     $comments = $storage->loadMultiple($coments_ids);
     $pre_render = [];
+
     foreach ($comments as $comment) {
       $pre_render[] = $view_builder->view($comment);
     }
@@ -51,7 +65,6 @@ class CommentsController extends ControllerBase {
     $pager = [
       '#type' => 'pager',
     ];
-
 
     return [
       '#theme' => 'guest_book_template',

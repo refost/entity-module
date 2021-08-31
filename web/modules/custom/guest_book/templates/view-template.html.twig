@@ -1,7 +1,7 @@
 
 {# ** @file modules/custom/guest_book/templates/guest_book_template.html.twig
  *
- * Default theme implementation to present Artwork data.
+ * Default theme implementation to present guest_book data.
  *
  * Available variables:
  * - content: A list of content items. Use 'content' to print all content, or
@@ -14,49 +14,49 @@
  */
 #}
 
-<div class="comment" {{ attributes.addClass('guest_book') }}>
+<div class="feedback" {{ attributes.addClass('guest_book') }}>
 
-{#         block with Avatar and data #}
+  {#         block with Avatar and data #}
 
-        <div class="user">
-          <div class="avatar">
-            {{ content.avatar }}
-          </div>
-          <span class="name">{{ content.name }}</span>
-          <span class="date">{{ content.created }}</span>
+  <div class="user">
+    <div class="avatar">
+      {{ content.avatar }}
+    </div>
+    <span class="name">{{ content.name }}</span>
+    <span class="date">{{ content.created }}</span>
+  </div>
+  <div class="comment">
+
+    {#           block with contacts #}
+
+    <div class="contacts">
+      <div class="tel">
+        <span class="phone"> {{ content.telephone }}</span>
+      </div>
+      <div class="post">
+        <span class="email">{{ content.email }}</span>
+      </div>
+
+      {#             administrative buutons #}
+
+      {% if user.hasPermission('administer nodes') %}
+        <div class="manage">
+          {{ button }}
         </div>
-        <div class="comment">
+      {% endif %}
+    </div>
 
-{#           block with contacts #}
+    {#           block with comment text #}
 
-          <div class="contacts">
-            <div class="tel">
-              <span class="phone">{{ content.telephone }}</span>
-            </div>
-            <div class="post">
-              <span class="email">{{ content.email }}</span>
-            </div>
-
-{#             administrative buutons #}
-
-            {% if user.hasPermission('administer nodes') %}
-              <div class="manage">
-                {{ button }}
-              </div>
-            {% endif %}
-          </div>
-
-{#           block with comment text #}
-
-          <div class="comment-text">
-            {% if content.picture is not null %}
-              <div class="picture"> {{ content.picture }} </div>
-            {% endif %}
-            <div class="message">
-            {{ content.comment }}
-            </div>
-          </div>
-        </div>
+    <div class="comment-text">
+      {% if content.picture is not null %}
+        <div class="picture"> {{ content.picture }} </div>
+      {% endif %}
+      <div class="message">
+        {{ content.feedback }}
+      </div>
+    </div>
+  </div>
 
 
 </div>

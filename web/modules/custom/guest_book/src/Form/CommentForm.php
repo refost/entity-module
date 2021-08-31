@@ -7,13 +7,9 @@ use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Language\Language;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Ajax\HtmlCommand;
-use Drupal\Core\Ajax\CssCommand;
 
 /**
- * Form controller for the content_entity_example entity edit forms.
- *
- * @ingroup content_entity_example
+ * Form controller for the guest_book_comment entity edit forms.
  */
 class CommentForm extends ContentEntityForm {
 
@@ -21,7 +17,7 @@ class CommentForm extends ContentEntityForm {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    /* @var $entity \Drupal\guest_book\Entity\GuestBook */
+    /** @var \Drupal\guest_book\Entity\GuestBook $entity*/
     $form = parent::buildForm($form, $form_state);
     $entity = $this->entity;
 
@@ -46,7 +42,7 @@ class CommentForm extends ContentEntityForm {
       'event' => 'change',
       'disable-refocus' => TRUE,
       'progress' => [
-        'type' => 'none'
+        'type' => 'none',
       ],
     ];
 
@@ -55,17 +51,20 @@ class CommentForm extends ContentEntityForm {
       'event' => 'change',
       'disable-refocus' => TRUE,
       'progress' => [
-        'type' => 'none'
+        'type' => 'none',
       ],
     ];
 
-    $form['comment']['widget'][0]['value']['#maxlength'] = [
+    $form['feedback']['widget'][0]['value']['#maxlength'] = [
       1000,
     ];
 
     return $form;
   }
 
+  /**
+   * Function that validate name and display message with status.
+   */
   public function validName(array &$form, FormStateInterface $form_state):object {
     $name = $form_state->getValue('name')[0]['value'];
 
@@ -75,7 +74,9 @@ class CommentForm extends ContentEntityForm {
         new MessageCommand(
           $this->t('You name must be longer than 2 symbols'),
           '.field--name-name',
-          ['type'=>'error']
+          [
+            'type' => 'error',
+          ]
         )
       );
     }
@@ -84,13 +85,18 @@ class CommentForm extends ContentEntityForm {
         new MessageCommand(
           $this->t('You name is correct'),
           '.field--name-name',
-          ['type'=>'status']
+          [
+            'type' => 'status',
+          ]
         )
       );
     }
     return $response;
   }
 
+  /**
+   * Function that validate email and display message with status.
+   */
   public function validEmail(array &$form, FormStateInterface $form_state):object {
     $email = $form_state->getValue('email')[0]['value'];
     $regular = '/^[\w+]{2,100}@([\w+]{2,30})\.[\w+]{2,30}$/';
@@ -101,16 +107,20 @@ class CommentForm extends ContentEntityForm {
         new MessageCommand(
           $this->t('Email must be like this "yourname@mail.com"'),
           '.field--name-email',
-          ['type'=>'error']
+          [
+            'type' => 'error',
+          ]
         )
       );
-     }
+    }
     else {
       $response->AddCommand(
         new MessageCommand(
           $this->t('You email is correct'),
           '.field--name-email',
-          ['type'=>'status']
+          [
+            'type' => 'status',
+          ]
         )
       );
     }
@@ -118,7 +128,7 @@ class CommentForm extends ContentEntityForm {
   }
 
   /**
-   * Function that convert number in easy form.
+   * Function that convert number in easy for user form.
    */
   public function userPhone($phone):string {
 
@@ -147,7 +157,7 @@ class CommentForm extends ContentEntityForm {
   }
 
   /**
-   * Function that validate зрщту and display message with status of inputed data.
+   * Function that validate telephone and display message with status.
    */
   public function validTelephone(array &$form, FormStateInterface $form_state):object {
     $phone = $form_state->getValue('telephone')[0]['value'];
@@ -160,7 +170,9 @@ class CommentForm extends ContentEntityForm {
         new MessageCommand(
           $this->t('Your number must have 12 numbers. You can use only numbers'),
           '.field--name-telephone',
-          ['type'=>'error']
+          [
+            'type' => 'error',
+          ]
         )
       );
     }
@@ -169,7 +181,9 @@ class CommentForm extends ContentEntityForm {
         new MessageCommand(
           $this->t('You phone is') . ' ' . $this->userPhone($phone),
           '.field--name-telephone',
-          ['type'=>'status']
+          [
+            'type' => 'status',
+          ]
         )
       );
     }

@@ -8,13 +8,13 @@ use Drupal\Core\Url;
  */
 function guest_book_theme($existing, $type, $theme, $path):array {
   return [
-      'guest_book_template' => [
-        'variables' => [
-          'form' => [],
-          'comment' => [],
-          'pager' => [],
-        ],
+    'guest_book_template' => [
+      'variables' => [
+        'form' => [],
+        'comment' => [],
+        'pager' => [],
       ],
+    ],
     'guest_book_comment' => [
       'template' => 'view-template',
       'render element' => 'elements',
@@ -22,12 +22,13 @@ function guest_book_theme($existing, $type, $theme, $path):array {
   ];
 }
 
-
 /**
  * Implements hook_preprocess_HOOK().
  */
 function guest_book_preprocess_guest_book_comment(&$variables) {
+  // Helpful $content variable for templates.
   $variables['content'] = [];
+
   foreach (Element::children($variables['elements']) as $key) {
     $variables['content'][$key] = $variables['elements'][$key];
   }
@@ -35,17 +36,14 @@ function guest_book_preprocess_guest_book_comment(&$variables) {
   /** @var \Drupal\guest_book\Entity\GuestBook $entity */
   $entity = $variables['elements']['#guest_book_comment'];
 
-  // Provide the label.
-  $variables['label'] = $entity->label();
-  // Provide the alias.
-  $variables['url'] = $entity->toUrl()->toString();
-
+  // Add control button.
   $variables['button'] = [
     '#type' => 'link',
     '#title' => 'Manage',
     '#url' => Url::fromRoute('entity.guest_book_comment.edit_form', ['guest_book_comment' => $entity->id()],),
   ];
 
+  // Add default image.
   if (count($variables['content']['avatar']) <= 3) {
     $variables['content']['avatar'] = [
       '#theme' => 'image',
@@ -58,9 +56,4 @@ function guest_book_preprocess_guest_book_comment(&$variables) {
     ];
   }
   $variables['#attached']['library'][] = 'guest_book/guest_book.comments';
-
-}
-
-function guest_book_preprocess_guest_book_template(&$variables) {
-  $variables['#attached']['library'][] = 'guest_book/guest_book.general';
 }
